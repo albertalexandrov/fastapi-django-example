@@ -1,5 +1,8 @@
+from functools import partial
+
 from environs import Env
 from fastapi_django.constants import EnvironmentEnum
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 env = Env()
 env.read_env(".env", override=True)
@@ -19,3 +22,7 @@ UVICORN_PORT = env.int("UVICORN_PORT", default=8000)
 UVICORN_RELOAD = env.bool("UVICORN_RELOAD", default=True)
 
 PROMETHEUS_ENABLED = env.bool("PROMETHEUS_ENABLED", default=False)
+
+MIDDLEWARES = [
+    partial(TrustedHostMiddleware, allowed_hosts=["localhost", "*.example.com"])
+]

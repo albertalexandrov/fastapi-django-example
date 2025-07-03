@@ -319,7 +319,7 @@ standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.5)", "htt
 
 [[package]]
 name = "fastapi-django"
-version = "0.2.6"
+version = "0.2.9"
 description = ""
 optional = false
 python-versions = "^3.11"

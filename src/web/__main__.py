@@ -1,16 +1,15 @@
 import uvicorn
 
-import settings
-
 
 def main():
     uvicorn.run(
-        "web.app:get_app",
+        "fastapi_django.app:application",
         workers=settings.UVICORN_WORKERS,
         host=settings.UVICORN_HOST,
         port=settings.UVICORN_PORT,
         reload=settings.UVICORN_RELOAD,
-        factory=True,
+        factory=False,
+        env_file='.env'
     )
 
 

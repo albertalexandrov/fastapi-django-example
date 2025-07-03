@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "web-workers-project-structure"
+name = "fastapi-django-example"
 version = "0.1.0"
 description = ""
 authors = ["albertalexandrov <albert-ugatu@list.ru>"]
@@ -22,7 +22,8 @@ fastapi-filter = "^2.0.1"
 pydantic-i18n = "^0.4.5"
 python-benedict = "^0.34.1"
 faststream = {extras = ["redis"], version = "^0.5.41"}
-fastapi-xyz = {path = "/Users/albertaleksandrov/PycharmProjects/fastapi-xyz"}
+fastapi-django = {path = "/Users/albertaleksandrov/PycharmProjects/fastapi-django"}
+environs = "^14.2.0"
 
 
 [build-system]

@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from fastapi_xyz.conf import settings
+from fastapi_django.conf import settings
 
 router = APIRouter(tags=['Тест'])
 
 
 @router.get('/test')
 async def test():
-    return settings.PROJECT_NAME
+    return settings.MIDDLEWARES

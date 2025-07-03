@@ -1,29 +1,23 @@
-import logging
+from fastapi_django.app import application
+
 from pathlib import Path
 
-import sentry_sdk
 from benedict import benedict
 from fastapi import FastAPI, APIRouter
-from fastapi.exceptions import RequestValidationError
-from fastapi_xyz.conf import settings
+from fastapi_django.conf import settings
 from prometheus_fastapi_instrumentator import PrometheusFastApiInstrumentator
-from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
-from sentry_sdk.integrations.starlette import StarletteIntegration
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 
 from shared.constants import EnvironmentEnum
-
 from web.api.docs.views import router as docs_router
-from web.api.monitoring.views import router as monitoring_router
 from web.api.help.views import router as help_router
+from web.api.monitoring.views import router as monitoring_router
+from web.api.test import router as test_router
 from web.exceptions import RequestBodyValidationError, NotFoundError, AnyBodyBadRequestError
 from web.i18n import locale
 from web.middlewares import example_middleware
-
 
 APP_ROOT = Path(__file__).parent
 
@@ -60,6 +54,7 @@ def include_routers(app: FastAPI):
         router.include_router(docs_router)
     router.include_router(monitoring_router)
     router.include_router(help_router)
+    router.include_router(test_router)
     app.include_router(router)
 
 
@@ -73,34 +68,37 @@ def setup_prometheus(app: FastAPI) -> None:  # pragma: no cover
     instrumentator.expose(app, should_gzip=True, name="prometheus_metrics", tags=["Метрики"])
 
 
-def get_app() -> FastAPI:
-    # if settings.sentry_dsn:
-    #     sentry_sdk.init(
-    #         dsn=settings.sentry_dsn,
-    #         traces_sample_rate=0.1,
-    #         environment=settings.environment,
-    #         integrations=[
-    #             StarletteIntegration(),
-    #             FastApiIntegration(transaction_style="endpoint"),
-    #             LoggingIntegration(level=logging.getLevelName(settings.log_level)),
-    #             SqlalchemyIntegration(),
-    #         ],
-    #     )
-    app = FastAPI(
-        title=settings.PROJECT_NAME,
-        docs_url=None,
-        openapi_url=f"{settings.ROOT}/docs/openapi.json",
-        redoc_url=None,
-        version=settings.API_VERSION,
-        # exception_handlers={
-        #     RequestValidationError: request_validation_error_handler,
-        #     RequestBodyValidationError: request_body_validation_error_handler,
-        #     NotFoundError: not_found_error_handler,
-        #     AnyBodyBadRequestError: any_body_bad_request_exception_handler,
-        # },
-    )
-    print(app.openapi_url)
-    include_routers(app)
-    add_middlewares(app)
-    setup_prometheus(app)
-    return app
+# def get_app() -> FastAPI:
+#     # if settings.sentry_dsn:
+#     #     sentry_sdk.init(
+#     #         dsn=settings.sentry_dsn,
+#     #         traces_sample_rate=0.1,
+#     #         environment=settings.environment,
+#     #         integrations=[
+#     #             StarletteIntegration(),
+#     #             FastApiIntegration(transaction_style="endpoint"),
+#     #             LoggingIntegration(level=logging.getLevelName(settings.log_level)),
+#     #             SqlalchemyIntegration(),
+#     #         ],
+#     #     )
+#     app = FastAPI(
+#         title=settings.PROJECT_NAME,
+#         docs_url=None,
+#         openapi_url=f"{settings.ROOT}/docs/openapi.json",
+#         redoc_url=None,
+#         version=settings.API_VERSION,
+#         # exception_handlers={
+#         #     RequestValidationError: request_validation_error_handler,
+#         #     RequestBodyValidationError: request_body_validation_error_handler,
+#         #     NotFoundError: not_found_error_handler,
+#         #     AnyBodyBadRequestError: any_body_bad_request_exception_handler,
+#         # },
+#     )
+#     print(app.openapi_url)
+#     include_routers(app)
+#     add_middlewares(app)
+#     setup_prometheus(app)
+#     return app
+
+
+application.include_router(test_router)

@@ -17,3 +17,5 @@ UVICORN_WORKERS = env.int("UVICORN_WORKERS", default=1)
 UVICORN_HOST = env.str("UVICORN_HOST", default="localhost")
 UVICORN_PORT = env.int("UVICORN_PORT", default=8000)
 UVICORN_RELOAD = env.bool("UVICORN_RELOAD", default=True)
+
+PROMETHEUS_ENABLED = env.bool("PROMETHEUS_ENABLED", default=False)

@@ -16,6 +16,16 @@ API_VERSION = env.str("API_VERSION", default="0.1.0")
 API_DOCS_ENABLED = env.bool("API_DOCS_ENABLED", default=False)
 API_PREFIX = env.str("API_PREFIX", default="/api")
 
+ENGINE = {
+    "DRIVER": "django.db.backends.postgresql",
+    "NAME": "mydatabase",
+    "USER": "mydatabaseuser",
+    "PASSWORD": "mypassword",
+    "HOST": "127.0.0.1",
+    "PORT": "5432",
+}
+
+UVICORN_APP = "web.app:app"
 UVICORN_WORKERS = env.int("UVICORN_WORKERS", default=1)
 UVICORN_HOST = env.str("UVICORN_HOST", default="localhost")
 UVICORN_PORT = env.int("UVICORN_PORT", default=8000)

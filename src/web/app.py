@@ -1,9 +1,9 @@
-from fastapi_django.app import application
 
 from pathlib import Path
 
 from benedict import benedict
 from fastapi import FastAPI, APIRouter
+from fastapi_django.app import get_default_app
 from fastapi_django.conf import settings
 from prometheus_fastapi_instrumentator import PrometheusFastApiInstrumentator
 from starlette.requests import Request
@@ -100,5 +100,8 @@ def setup_prometheus(app: FastAPI) -> None:  # pragma: no cover
 #     setup_prometheus(app)
 #     return app
 
-
-application.include_router(test_router)
+# создается приложение с указанными или дефолтными настройками
+app = get_default_app()
+# созданное приложение доконфигурируется, напр., добавляются урлы
+app.include_router(test_router)
+print("===>", app)

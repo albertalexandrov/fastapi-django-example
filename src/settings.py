@@ -18,13 +18,13 @@ API_PREFIX = env.str("API_PREFIX", default="/api")
 
 DATABASE = {
     "DRIVERNAME": "postgresql+asyncpg",
-    "DATABASE": "fastapi-django",
-    "USERNAME": "postgres",
-    "PASSWORD": "postgres",
-    "HOST": "127.0.0.1",
-    "PORT": "5433",
+    "DATABASE": env.str("DATABASE_NAME"),
+    "USERNAME": env.str("DATABASE_USERNAME"),
+    "PASSWORD": env.str("DATABASE_PASSWORD"),
+    "HOST": env.str("DATABASE_HOST"),
+    "PORT": env.str("DATABASE_PORT", "5432"),
     "OPTIONS": {
-        "echo": True
+        "echo": env.bool("DATABASE_ECHO", False),
     },
 }
 

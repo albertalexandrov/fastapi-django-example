@@ -16,13 +16,16 @@ API_VERSION = env.str("API_VERSION", default="0.1.0")
 API_DOCS_ENABLED = env.bool("API_DOCS_ENABLED", default=False)
 API_PREFIX = env.str("API_PREFIX", default="/api")
 
-ENGINE = {
-    "DRIVER": "django.db.backends.postgresql",
-    "NAME": "mydatabase",
-    "USER": "mydatabaseuser",
-    "PASSWORD": "mypassword",
+DATABASE = {
+    "DRIVERNAME": "postgresql+asyncpg",
+    "DATABASE": "fastapi-django",
+    "USERNAME": "postgres",
+    "PASSWORD": "postgres",
     "HOST": "127.0.0.1",
-    "PORT": "5432",
+    "PORT": "5433",
+    "OPTIONS": {
+        "echo": True
+    },
 }
 
 UVICORN_APP = "web.app:app"

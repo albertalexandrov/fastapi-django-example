@@ -8,13 +8,9 @@ from fastapi_django.conf import settings
 from prometheus_fastapi_instrumentator import PrometheusFastApiInstrumentator
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-from starlette.staticfiles import StaticFiles
 
-from shared.constants import EnvironmentEnum
-from web.api.docs.views import router as docs_router
-from web.api.help.views import router as help_router
-from web.api.monitoring.views import router as monitoring_router
 from web.api.test import router as test_router
+from web.api.users import router as users_router
 from web.exceptions import RequestBodyValidationError, NotFoundError, AnyBodyBadRequestError
 from web.i18n import locale
 from web.middlewares import example_middleware
@@ -49,11 +45,6 @@ def request_validation_error_handler(request: Request, exc):
 
 def include_routers(app: FastAPI):
     router = APIRouter(prefix=settings.ROOT)
-    if settings.API_DOCS_ENABLED and settings.ENVIRONMENT != EnvironmentEnum.PROD.value:
-        app.mount(f"{settings.ROOT}/static", StaticFiles(directory=APP_ROOT / "static"), name="static")
-        router.include_router(docs_router)
-    router.include_router(monitoring_router)
-    router.include_router(help_router)
     router.include_router(test_router)
     app.include_router(router)
 
@@ -100,8 +91,9 @@ def setup_prometheus(app: FastAPI) -> None:  # pragma: no cover
 #     setup_prometheus(app)
 #     return app
 
-# создается приложение с указанными или дефолтными настройками
+
+# 1. создается приложение с указанными или дефолтными настройками
 app = get_default_app()
-# созданное приложение доконфигурируется, напр., добавляются урлы
+# 2. созданное приложение доконфигурируется, напр., добавляются урлы
 app.include_router(test_router)
-print("===>", app)
+app.include_router(users_router)

@@ -1,27 +1,32 @@
 import asyncio
 from logging.config import fileConfig
 
+from fastapi_django.db import engine
+
+# # TODO: надо как то с этим разобраться, а то не понятно, почему так:
+# # чтобы Alembic "видел" модели, необходимо импортировать их и fastapi_django.db.models.metadata
+# # в models/__init__.py.  затем импортировать models.metadata сюда
+from models import metadata
+
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from settings import settings
-from models import Subsection
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = Subsection.metadata
-config.set_main_option("sqlalchemy.url", settings.db.dsn.render_as_string(hide_password=False))
+url = engine.sync_engine.url.render_as_string(hide_password=False)
+config.set_main_option("sqlalchemy.url", url)
 
 
 def run_migrations_offline() -> None:
     context.configure(
-        url=settings.db.dsn,
-        target_metadata=target_metadata,
+        url=url,
+        target_metadata=metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
@@ -30,7 +35,7 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(connection=connection, target_metadata=metadata)
     with context.begin_transaction():
         context.run_migrations()
 

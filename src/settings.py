@@ -39,3 +39,9 @@ PROMETHEUS_ENABLED = env.bool("PROMETHEUS_ENABLED", default=False)
 MIDDLEWARES = [
     partial(TrustedHostMiddleware, allowed_hosts=["localhost", "*.example.com"])
 ]
+
+USR_ADM_AUTH_HOST = env.str("USR_ADM_AUTH_HOST", default="http://localhost")
+USR_ADM_AUTH_USERNAME = env.str("USR_ADM_AUTH_USERNAME", default="username")
+USR_ADM_AUTH_PASSWORD = env.str("USR_ADM_AUTH_PASSWORD", default="password")
+USR_ADM_AUTH_VERIFY = env.bool("USR_ADM_AUTH_VERIFY", default=True)
+USR_ADM_AUTH_REALM_URL = env.str("USR_ADM_AUTH_REALM_URL", default="http://localhost")

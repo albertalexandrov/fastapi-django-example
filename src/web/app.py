@@ -11,7 +11,7 @@ from starlette.responses import JSONResponse
 
 from web.api.test import router as test_router
 from web.api.users import router as users_router
-from web.api.examples import auth_examples_router, permissions_examples_router, session_examples_router
+from web.api.examples import auth_examples_router, permissions_examples_router, session_examples_router, services_examples_router
 from web.exceptions import RequestBodyValidationError, NotFoundError, AnyBodyBadRequestError
 from web.i18n import locale
 from web.middlewares import example_middleware
@@ -101,3 +101,4 @@ app.include_router(users_router)
 app.include_router(auth_examples_router)
 app.include_router(permissions_examples_router)
 app.include_router(session_examples_router)
+app.include_router(services_examples_router)

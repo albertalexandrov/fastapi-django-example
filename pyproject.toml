@@ -29,6 +29,7 @@ python-multipart = "^0.0.20"
 pyjwt = "^2.10.1"
 httpx = "^0.28.1"
 cryptography = "^45.0.5"
+pydantic-async-validation = "^0.3.0"
 
 
 [build-system]

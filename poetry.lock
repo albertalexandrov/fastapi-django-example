@@ -457,7 +457,7 @@ standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.5)", "htt
 
 [[package]]
 name = "fastapi-django"
-version = "0.7.0"
+version = "0.7.1"
 description = ""
 optional = false
 python-versions = "^3.11"
@@ -953,6 +953,24 @@ typing-inspection = ">=0.4.0"
 [package.extras]
 email = ["email-validator (>=2.0.0)"]
 timezone = ["tzdata"]
+
+[[package]]
+name = "pydantic-async-validation"
+version = "0.3.0"
+description = "Add async validation to pydantic"
+optional = false
+python-versions = "<4.0,>=3.8"
+files = [
+    {file = "pydantic_async_validation-0.3.0-py3-none-any.whl", hash = "sha256:e03562dfec99ebc601dcf68b2f7d1f3f22d1cd5941765a6c5662c74d40310f46"},
+    {file = "pydantic_async_validation-0.3.0.tar.gz", hash = "sha256:e86fa9f1f4234421bd79deca045bab1370a5280cdc71534fd34b8b81e379587b"},
+]
+
+[package.dependencies]
+pydantic = ">=2.0.0,<3.0.0"
+pytest = ">=7.4,<9.0"
+
+[package.extras]
+fastapi = ["fastapi (>=0.100.0,<1.0.0)"]
 
 [[package]]
 name = "pydantic-core"
@@ -1533,4 +1551,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.6.3)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c91cf211350305fa1cfe695a80e33f44548c19ab53c6451dc27ad7ddb7609d3f"
+content-hash = "54cf7467c85dc782e943f9407ab9982b7774f7e79e875d3c3d806993c4e6a125"

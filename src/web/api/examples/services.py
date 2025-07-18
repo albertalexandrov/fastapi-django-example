@@ -1,31 +1,25 @@
-from fastapi import APIRouter, Depends, Request
-from fastapi_django.auth.some_kz_lib.usr_adm_auth import UsrAdmAuth
-from fastapi_django.db.dependencies import contextify_autocommit_session
-from fastapi_django.exceptions.http import HTTP401Exception, HTTP404Exception
-from fastapi_django.permissions.some_kz_lib.permissions import CodenamePermission
+from fastapi_django.auth.some_kz_lib.usr_adm_auth import User as RequestUser
+from fastapi_django.exceptions.http import HTTP400Exception
 
-from web.dependencies import UsersRepository
-
-router = APIRouter(tags=["Примеры сервисов"])
-
-CanCreateOffer = CodenamePermission("offer_create")
-UserNotFoundHTTPException = HTTP404Exception("Пользователь не найден")
+from models import User
+from shared.repositories import UsersRepository, UserRolesRepository
 
 
-@router.get(
-    "/simple/get/user/{user_id}",
-    description="Пример простого get запрос (сложный - с фильтрами, сортировками и пагинацией)",
-    dependencies=[
-        Depends(UsrAdmAuth()),
-        Depends(CanCreateOffer),
-        Depends(contextify_autocommit_session())
-    ]
-)
-async def simple_get(request: Request, user_id: int, users: UsersRepository):
-    # с простыми get запросами проблем быть не должно.  думаю, в большинстве случаев, будет достаточно
-    # функионала кверисетов.  а если не хватит, то скорее всего можно будет обойтись один созданным
-    # методом в репозитории.  создание отдельного сервис для get запроса - крайний случай
-    print(f"Поступил запрос от пользователя {request.user.username}")
-    if user := await users.objects.filter(id=user_id).first():
-        return user
-    raise UserNotFoundHTTPException
+class RoleNotFoundHTTPException(HTTP400Exception):
+
+    def __init__(self, headers: dict | None = None) -> None:
+        super().__init__(detail="Роль не найдена", headers=headers)
+
+
+class CreateUserService:
+    def __init__(self):
+        self._users_repository = UsersRepository()
+        self._user_roles_repository = UserRolesRepository()
+
+    async def create_user(self, data: dict, user: RequestUser) -> User:
+        data["created_by_email"] = user.username
+        role_id = data.pop('role_id')
+        if (role := await self._user_roles_repository.get_by_pk(role_id)) is None:
+            raise RoleNotFoundHTTPException
+        data["role"] = role
+        return await self._users_repository.commit(True).create(**data)

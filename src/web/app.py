@@ -11,25 +11,13 @@ from starlette.responses import JSONResponse
 
 from web.api.test import router as test_router
 from web.api.users import router as users_router
-from web.api.examples import auth_examples_router, permissions_examples_router, session_examples_router, services_examples_router
-from web.exceptions import RequestBodyValidationError, NotFoundError, AnyBodyBadRequestError
+from web.api.examples import auth_examples_router, permissions_examples_router, session_examples_router, crud_examples_router
 from web.i18n import locale
 from web.middlewares import example_middleware
 
 APP_ROOT = Path(__file__).parent
 
 # todo: обработчики можно вынести в библиотеку в папку faststream, например
-
-def request_body_validation_error_handler(request: Request, exc: RequestBodyValidationError):
-    return JSONResponse(exc.validation_errors, status_code=422)
-
-
-def not_found_error_handler(request: Request, exc: NotFoundError):
-    return JSONResponse({"error": exc.error}, status_code=404)
-
-
-def any_body_bad_request_exception_handler(request: Request, exc: AnyBodyBadRequestError) -> JSONResponse:
-    return JSONResponse(status_code=400, content=exc.body)
 
 
 def request_validation_error_handler(request: Request, exc):
@@ -101,4 +89,4 @@ app.include_router(users_router)
 app.include_router(auth_examples_router)
 app.include_router(permissions_examples_router)
 app.include_router(session_examples_router)
-app.include_router(services_examples_router)
+app.include_router(crud_examples_router)

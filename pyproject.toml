@@ -8,7 +8,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.115.12"
+fastapi = "^0.116"
 pydantic-settings = "^2.9.1"
 sqlalchemy = "^2.0.40"
 alembic = "^1.15.2"
@@ -30,6 +30,7 @@ pyjwt = "^2.10.1"
 httpx = "^0.28.1"
 cryptography = "^45.0.5"
 pydantic-async-validation = "^0.3.0"
+pydantic = "2.10.6"
 
 
 [build-system]

@@ -1,5 +1,4 @@
 from typing import Annotated
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, Request
 from fastapi_django.auth.some_kz_lib.usr_adm_auth import UsrAdmAuth
@@ -7,11 +6,9 @@ from fastapi_django.db.dependencies import contextify_autocommit_session
 from fastapi_django.exceptions.http import HTTP404Exception
 from fastapi_django.permissions.some_kz_lib.permissions import CodenamePermission
 from pydantic import BaseModel
-from pydantic.fields import Field
-from pydantic_async_validation import AsyncValidationModelMixin, async_field_validator
 
-from web.api.examples.services import CreateUserService
-from web.dependencies import UsersRepository
+from shared.repositories import UsersRepository
+from web.api.crud.services import CreateUserService, UsersListService
 
 router = APIRouter(tags=["Примеры CRUD операций"])
 
@@ -28,9 +25,9 @@ UserNotFoundHTTPException = HTTP404Exception("Пользователь не на
         Depends(contextify_autocommit_session())
     ]
 )
-async def simple_get(request: Request, user_id: int, users: UsersRepository):
+async def simple_get(request: Request, user_id: int, users: UsersRepository = Depends()):
     # с простыми get запросами проблем быть не должно.  думаю, в большинстве случаев, будет достаточно
-    # функионала кверисетов.  а если не хватит, то скорее всего можно будет обойтись один созданным
+    # функционала кверисетов.  а если не хватит, то скорее всего можно будет обойтись один созданным
     # методом в репозитории.  создание отдельного сервис для get запроса - крайний случай
     print(f"Поступил запрос от пользователя {request.user.username}")
     if user := await users.objects.filter(id=user_id).first():
@@ -54,3 +51,11 @@ class UserCreateData(BaseModel):
 )
 async def create_user(request: Request, data: UserCreateData, service: Annotated[CreateUserService, Depends()]):
     return await service.create_user(data.model_dump(), request.user)
+
+
+@router.get(
+    "/filtering-ordering-paginate-users",
+    dependencies=[Depends(contextify_autocommit_session())]
+)
+async def get_users(service: UsersListService = Depends(UsersListService.init)):
+    return await service.list()

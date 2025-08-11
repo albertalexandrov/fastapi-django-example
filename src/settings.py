@@ -48,3 +48,10 @@ USR_ADM_AUTH_REALM_URL = env.str("USR_ADM_AUTH_REALM_URL", default="http://local
 
 INTEGRATION_USER_USERNAME = env.str("INTEGRATION_USER_USERNAME")
 INTEGRATION_USER_PASSWORD = env.str("INTEGRATION_USER_PASSWORD")
+
+MANAGEMENT = [
+    {
+        "typer": "management.cli:typer",
+        # "name": "project-commands",  # объединение команд проекта в группу команд под названием project-commands
+    }
+]

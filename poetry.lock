@@ -458,7 +458,7 @@ standard-no-fastapi-cloud-cli = ["email-validator (>=2.0.0)", "fastapi-cli[stand
 
 [[package]]
 name = "fastapi-django"
-version = "0.8.28"
+version = "0.9.12"
 description = ""
 optional = false
 python-versions = "^3.11"

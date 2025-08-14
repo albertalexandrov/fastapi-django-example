@@ -22,7 +22,6 @@ fastapi-filter = "^2.0.1"
 pydantic-i18n = "^0.4.5"
 python-benedict = "^0.34.1"
 faststream = {extras = ["redis"], version = "^0.5.41"}
-fastapi-django = {path = "/Users/albertaleksandrov/PycharmProjects/fastapi-django"}
 environs = "^14.2.0"
 pytest = "^8.4.1"
 python-multipart = "^0.0.20"
@@ -31,6 +30,8 @@ httpx = "^0.28.1"
 cryptography = "^45.0.5"
 pydantic-async-validation = "^0.3.0"
 pydantic = "2.10.6"
+fastapi-django = {path = "/Users/albertaleksandrov/PycharmProjects/fastapi-django"}
+python-json-logger = "^3.3.0"
 
 
 [build-system]

@@ -1,3 +1,4 @@
+import logging
 from functools import partial
 
 from environs import Env
@@ -10,11 +11,10 @@ env.read_env(".env", override=True)
 ENVIRONMENT = EnvironmentEnum.get_environment()
 
 API_TITLE = env.str("API_TITLE", default="API title")
-API_SUMMARY = env.str("API_SUMMARY", default="API summary")
-API_DESCRIPTION = env.str("API_DESCRIPTION", default="API description")
-API_VERSION = env.str("API_VERSION", default="0.1.0")
 API_DOCS_ENABLED = env.bool("API_DOCS_ENABLED", default=False)
 API_PREFIX = env.str("API_PREFIX", default="/api")
+
+LOG_LEVEL = env.str("LOG_LEVEL", default="INFO")
 
 DATABASE = {
     "DRIVERNAME": "postgresql+asyncpg",
@@ -28,7 +28,7 @@ DATABASE = {
     },
 }
 
-UVICORN_APP = "web.app:app"
+UVICORN_APP = "web.app:create_app"
 UVICORN_WORKERS = env.int("UVICORN_WORKERS", default=1)
 UVICORN_HOST = env.str("UVICORN_HOST", default="localhost")
 UVICORN_PORT = env.int("UVICORN_PORT", default=8000)
@@ -55,3 +55,26 @@ MANAGEMENT = [
         # "name": "project-commands",  # объединение команд проекта в группу команд под названием project-commands
     }
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "reserved_attrs": [],  # в лог добавляются все поля
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": LOG_LEVEL,
+            "formatter": "json",
+            "stream": "ext://sys.stdout",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}

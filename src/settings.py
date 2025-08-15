@@ -51,8 +51,8 @@ INTEGRATION_USER_PASSWORD = env.str("INTEGRATION_USER_PASSWORD")
 
 MANAGEMENT = [
     {
-        "typer": "management.cli:typer",
-        # "name": "project-commands",  # объединение команд проекта в группу команд под названием project-commands
+        "TYPER": "management.cli:typer",
+        # "NAME": "project-commands",  # объединение команд проекта в группу команд под названием project-commands
     }
 ]
 

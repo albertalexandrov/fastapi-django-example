@@ -14,6 +14,7 @@ from web.api.sessions import session_examples_router
 from web.api.test import router as test_router
 from web.api.users import router as users_router
 from web.api.mail import router as mail_router
+from web.api.bell import router as bell_router
 
 
 def setup_prometheus(app: FastAPI) -> None:
@@ -52,4 +53,5 @@ def create_app() -> FastAPI:
     app.include_router(session_examples_router)
     app.include_router(crud_router)
     app.include_router(mail_router)
+    app.include_router(bell_router)
     return app

@@ -529,7 +529,7 @@ url = "../fastapi-django"
 
 [[package]]
 name = "fastapi-django-kz"
-version = "0.1.14"
+version = "0.1.25"
 description = ""
 optional = false
 python-versions = "^3.11"

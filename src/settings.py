@@ -123,6 +123,10 @@ KZ_MAILING_SERVICE_NAME = "fastapi-django-example"
 KZ_MAILING_FROM_EMAIL = env.str("KZ_MAILING_FROM_EMAIL")
 KZ_MAILING_LIFE_TIME = env.int("KZ_MAILING_LIFE_TIME", 30)
 KZ_MAILING_RMQ_TIMEOUT = env.int("KZ_MAILING_RMQ_TIMEOUT", 5)
+KZ_MAILING_USR_ADM_HOST = env.str("KZ_MAILING_USR_ADM_HOST", "http://localhost")
+KZ_MAILING_USR_ADM_USERNAME = env.str("KZ_MAILING_USR_ADM_USERNAME", "username")
+KZ_MAILING_USR_ADM_PASSWORD = env.str("KZ_MAILING_USR_ADM_PASSWORD", "username")
+KZ_MAILING_USR_ADM_VERIFY = env.bool("KZ_MAILING_USR_ADM_VERIFY", True)
 
 # отправка электронных писем в сервис уведомлений (специфично для НКЗ)
 # данные отправляются в сервис по http
@@ -135,3 +139,12 @@ NKZ_MAILING_SERVICE_NAME = "fastapi-django-example"
 NKZ_MAILING_LIFE_TIME = env.int("NKZ_MAILING_LIFE_TIME", 30)
 NKZ_MAILING_TIMEOUT = env.int("NKZ_MAILING_TIMEOUT", 5)
 NKZ_MAILING_VERIFY = env.bool("NKZ_MAILING_VERIFY", True)
+
+# отправка уведомлений через Колокольчик
+
+KZ_BELL_BACKEND = "kz.bell.backends.bllsrv.BellBackend"
+KZ_BELL_HOST = env.str("KZ_BELL_HOST", "http://localhost")
+KZ_BELL_USERNAME = env.str("KZ_BELL_USERNAME", "username")
+KZ_BELL_PASSWORD = env.str("KZ_BELL_PASSWORD", "password")
+KZ_BELL_VERIFY = env.bool("KZ_BELL_VERIFY", True)
+KZ_BELL_TIMEOUT = env.int("KZ_BELL_TIMEOUT", 5)

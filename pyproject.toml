@@ -32,6 +32,8 @@ pydantic-async-validation = "^0.3.0"
 pydantic = "2.10.6"
 fastapi-django = {path = "/Users/albertaleksandrov/PycharmProjects/fastapi-django"}
 python-json-logger = "^3.3.0"
+fastapi-django-kz = {path = "/Users/albertaleksandrov/PycharmProjects/fastapi-django-kz"}
+fastapi-django-nkz = {path = "/Users/albertaleksandrov/PycharmProjects/fastapi-django-nkz"}
 
 
 [build-system]

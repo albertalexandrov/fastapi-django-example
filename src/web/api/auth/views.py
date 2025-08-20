@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from fastapi_django.auth import CredentialsBasicAuthentication, AuthenicationClasses
-from fastapi_django.auth.some_kz_lib.usr_adm_auth import UsrAdmAuth
 from fastapi_django.conf import settings
+from kz.auth.usr_adm import UsrAdmAuth
 from starlette.requests import Request
 
 from web.auth import ServiceUserAuth
@@ -17,7 +17,7 @@ router = APIRouter(tags=["Примеры аутентификации"])
     ]
 )
 async def multiple_schemes(request: Request):
-    print(request.user)
+    return request.user.model_dump()
 
 
 @router.get(
@@ -31,7 +31,7 @@ async def multiple_schemes(request: Request):
     ]
 )
 async def service_user_auth(request: Request):
-    print(request.user)
+    return request.user.model_dump()
 
 
 @router.get(
@@ -42,7 +42,7 @@ async def service_user_auth(request: Request):
     ]
 )
 async def credentials_basic_auth(request: Request):
-    print(request.user)
+    return request.user.model_dump()
 
 
 @router.get(
@@ -53,4 +53,4 @@ async def credentials_basic_auth(request: Request):
     ]
 )
 async def usr_adm_auth(request: Request):
-    print(request.user)
+    return request.user.model_dump()

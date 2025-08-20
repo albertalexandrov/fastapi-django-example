@@ -1,4 +1,3 @@
-import logging
 from functools import partial
 
 from environs import Env
@@ -39,12 +38,6 @@ PROMETHEUS_ENABLED = env.bool("PROMETHEUS_ENABLED", default=False)
 MIDDLEWARES = [
     partial(TrustedHostMiddleware, allowed_hosts=["localhost", "*.example.com"])
 ]
-
-USR_ADM_AUTH_HOST = env.str("USR_ADM_AUTH_HOST", default="http://localhost")
-USR_ADM_AUTH_USERNAME = env.str("USR_ADM_AUTH_USERNAME", default="username")
-USR_ADM_AUTH_PASSWORD = env.str("USR_ADM_AUTH_PASSWORD", default="password")
-USR_ADM_AUTH_VERIFY = env.bool("USR_ADM_AUTH_VERIFY", default=True)
-USR_ADM_AUTH_REALM_URL = env.str("USR_ADM_AUTH_REALM_URL", default="http://localhost")
 
 INTEGRATION_USER_USERNAME = env.str("INTEGRATION_USER_USERNAME")
 INTEGRATION_USER_PASSWORD = env.str("INTEGRATION_USER_PASSWORD")
@@ -111,6 +104,13 @@ EMAIL_PROVIDERS = {
     },
 }
 
+# данные к сервису user administration
+
+USR_ADM_HOST = env.str("USR_ADM_HOST", default="http://localhost")
+USR_ADM_USERNAME = env.str("USR_ADM_USERNAME", default="username")
+USR_ADM_PASSWORD = env.str("USR_ADM_PASSWORD", default="password")
+USR_ADM_VERIFY = env.bool("USR_ADM_VERIFY", default=True)
+
 # отправка электронных писем в сервис Mailing (специфично для КЗ)
 # для отправки писем используется функция kz.mail.send_mail
 
@@ -123,10 +123,10 @@ KZ_MAILING_SERVICE_NAME = "fastapi-django-example"
 KZ_MAILING_FROM_EMAIL = env.str("KZ_MAILING_FROM_EMAIL")
 KZ_MAILING_LIFE_TIME = env.int("KZ_MAILING_LIFE_TIME", 30)
 KZ_MAILING_RMQ_TIMEOUT = env.int("KZ_MAILING_RMQ_TIMEOUT", 5)
-KZ_MAILING_USR_ADM_HOST = env.str("KZ_MAILING_USR_ADM_HOST", "http://localhost")
-KZ_MAILING_USR_ADM_USERNAME = env.str("KZ_MAILING_USR_ADM_USERNAME", "username")
-KZ_MAILING_USR_ADM_PASSWORD = env.str("KZ_MAILING_USR_ADM_PASSWORD", "username")
-KZ_MAILING_USR_ADM_VERIFY = env.bool("KZ_MAILING_USR_ADM_VERIFY", True)
+KZ_MAILING_USR_ADM_HOST = USR_ADM_HOST
+KZ_MAILING_USR_ADM_USERNAME = USR_ADM_USERNAME
+KZ_MAILING_USR_ADM_PASSWORD = USR_ADM_PASSWORD
+KZ_MAILING_USR_ADM_VERIFY = USR_ADM_VERIFY
 
 # отправка электронных писем в сервис уведомлений (специфично для НКЗ)
 # данные отправляются в сервис по http
@@ -148,3 +148,11 @@ KZ_BELL_USERNAME = env.str("KZ_BELL_USERNAME", "username")
 KZ_BELL_PASSWORD = env.str("KZ_BELL_PASSWORD", "password")
 KZ_BELL_VERIFY = env.bool("KZ_BELL_VERIFY", True)
 KZ_BELL_TIMEOUT = env.int("KZ_BELL_TIMEOUT", 5)
+
+# аутентификация в сервисе user administration
+
+KZ_USR_ADM_AUTH_HOST = USR_ADM_HOST
+KZ_USR_ADM_AUTH_USERNAME = USR_ADM_USERNAME
+KZ_USR_ADM_AUTH_PASSWORD = USR_ADM_PASSWORD
+KZ_USR_ADM_AUTH_VERIFY = USR_ADM_VERIFY
+KZ_USR_ADM_AUTH_REALM_URL = env.str("KZ_USR_ADM_AUTH_REALM_URL", default="http://localhost")

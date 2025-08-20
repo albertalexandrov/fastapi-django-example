@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from fastapi_django.auth.some_kz_lib.usr_adm_auth import UsrAdmAuth
 from fastapi_django.db.dependencies import contextify_autocommit_session
+from kz.auth.usr_adm import UsrAdmAuth
 from starlette.requests import Request
 
 from shared.repositories.users import UsersRepository

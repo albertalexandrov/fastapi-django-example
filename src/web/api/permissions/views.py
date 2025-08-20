@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
-from fastapi_django.auth.some_kz_lib.usr_adm_auth import UsrAdmAuth
 from fastapi_django.permissions import PermissionClasses
 from fastapi_django.permissions.some_kz_lib.permissions import CodenamePermission
+from kz.auth.usr_adm import UsrAdmAuth
 from starlette.requests import Request
 
 router = APIRouter(tags=["Примеры работы с пермишенами"])

@@ -1,7 +1,7 @@
 from typing import Any, Self
 
 from fastapi import Depends
-from fastapi_django.auth.some_kz_lib.usr_adm_auth import User as RequestUser
+from kz.auth.usr_adm import User as RequestUser
 from fastapi_django.db.repositories.queryset import QuerySet
 from fastapi_django.db.services.list import ListService, LimitOffsetPagination
 from fastapi_django.exceptions.http import HTTP400Exception

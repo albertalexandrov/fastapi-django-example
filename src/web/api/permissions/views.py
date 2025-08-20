@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends
 from fastapi_django.permissions import PermissionClasses
-from fastapi_django.permissions.some_kz_lib.permissions import CodenamePermission
 from kz.auth.usr_adm import UsrAdmAuth
+from kz.permissions import CodenamePermission
 from starlette.requests import Request
 
 router = APIRouter(tags=["Примеры работы с пермишенами"])
 
-# можно каждый раз определять пермишен в виде CodenamePermission("offer_create"),
+# можно каждый раз определять пермишен в виде CodenamePermission("partners_edit"),
 # а можно дальнейшего переиспользования так:
-CanCreateOffer = CodenamePermission("offer_create")
+CanEditPartners = CodenamePermission("partners_edit")
+# ну или вообще вынести в таком виде библиотеку
 
 
 @router.get(
@@ -16,17 +17,20 @@ CanCreateOffer = CodenamePermission("offer_create")
     description="Пример использования пермишена CodenamePermission",
     dependencies=[
         Depends(UsrAdmAuth()),  # сначала аутентифицируем
-        Depends(CanCreateOffer),
+        Depends(CanEditPartners),
     ]
 )
 async def custom_permissions(request: Request):
-    print(request.user)
+    return request.user.model_dump()
 
 
 @router.get(
     "/multiple-permissions",
     description="Пример проверки нескольких пермишенов",
-    dependencies=[Depends(PermissionClasses(CanCreateOffer, CodenamePermission("DOES NOT EXIST")))]
+    dependencies=[
+        Depends(UsrAdmAuth()),
+        Depends(PermissionClasses(CanEditPartners, CodenamePermission("DOES NOT EXIST")))
+    ]
 )
 async def multiple_permissions(request: Request):
-    print(request.user)
+    return request.user.model_dump()

@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request
 from fastapi_django.db.dependencies import contextify_autocommit_session
 from fastapi_django.exceptions.http import HTTP404Exception
-from fastapi_django.permissions.some_kz_lib.permissions import CodenamePermission
 from kz.auth.usr_adm import UsrAdmAuth
+from kz.permissions import CodenamePermission
 from pydantic import BaseModel
 
 from shared.repositories import UsersRepository

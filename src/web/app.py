@@ -6,16 +6,18 @@ from tempfile import gettempdir
 
 from fastapi import FastAPI
 from fastapi_django.conf import settings
+from kz.middlewares.logging import LoggingMiddleware
 
 from web.api.auth import auth_examples_router
+from web.api.bell import router as bell_router
 from web.api.crud import crud_router
+from web.api.logging import router as logging_router
+from web.api.mail import router as mail_router
 from web.api.permissions import permissions_examples_router
 from web.api.sessions import session_examples_router
+from web.api.templates import router as templates_router
 from web.api.test import router as test_router
 from web.api.users import router as users_router
-from web.api.mail import router as mail_router
-from web.api.bell import router as bell_router
-from web.api.templates import router as templates_router
 
 
 def setup_prometheus(app: FastAPI) -> None:
@@ -42,6 +44,10 @@ async def lifespan(app: FastAPI):
     yield
 
 
+def add_middlewares(app: FastAPI):
+    app.add_middleware(LoggingMiddleware)  # noqa
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title="fastapi-django example",
@@ -56,4 +62,6 @@ def create_app() -> FastAPI:
     app.include_router(mail_router)
     app.include_router(bell_router)
     app.include_router(templates_router)
+    app.include_router(logging_router)
+    add_middlewares(app)
     return app

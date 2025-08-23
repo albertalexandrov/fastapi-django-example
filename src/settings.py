@@ -1,7 +1,9 @@
+import logging
 from functools import partial
 
 from environs import Env
 from fastapi_django.constants import EnvironmentEnum
+from kz.logging import default_logging_config
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 env = Env()
@@ -10,6 +12,9 @@ env.read_env(".env", override=True)
 ENVIRONMENT = EnvironmentEnum.get_environment()
 
 API_TITLE = env.str("API_TITLE", default="API title")
+
+PROJECT_NAME = "fastapi-django-example"
+
 API_DOCS_ENABLED = env.bool("API_DOCS_ENABLED", default=False)
 API_PREFIX = env.str("API_PREFIX", default="/api")
 
@@ -49,28 +54,13 @@ MANAGEMENT = [
     }
 ]
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "json": {
-            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
-            "reserved_attrs": [],  # в лог добавляются все поля
-        }
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "level": LOG_LEVEL,
-            # "formatter": "json",
-            "stream": "ext://sys.stdout",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "INFO",
-    },
-}
+LOGGING = default_logging_config  # default_logging_config - это функция  # TODO: нужно ли выносить такое в библиоетку?
+
+# настройки логирования КЗ
+KZ_LOGGING_LEVEL = logging.INFO
+KZ_LOGGING_JSON = True
+KZ_LOGGING_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+KZ_LOGGING_SERVICE_NAME = PROJECT_NAME   # TODO: при старте uvicorn это не добавляется в лог, но добавляется только при запросе пользователя
 
 # бекенды для непосредственной (немедленной, в отличии от отправки писем в КЗ) отправки электронных писем
 # на одном уровне с ключом BACKEND предлагается прописывать обязательные параметры, а в OPTIONS - необязательные
@@ -105,6 +95,7 @@ EMAIL_PROVIDERS = {
 }
 
 # данные к сервису user administration
+# тк эти данные используются в разных ситуациях, то вынесено в отдельную константу
 
 USR_ADM_HOST = env.str("USR_ADM_HOST", default="http://localhost")
 USR_ADM_USERNAME = env.str("USR_ADM_USERNAME", default="username")

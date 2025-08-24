@@ -3,7 +3,7 @@ import logging
 from fastapi import APIRouter, Depends
 from fastapi import Request
 from kz.auth.usr_adm import UsrAdmAuth
-from kz.middlewares.logging import logging_context
+from fastapi_django.logging import logging_context
 
 router = APIRouter(tags=["Логирование"])
 

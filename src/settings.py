@@ -3,7 +3,7 @@ from functools import partial
 
 from environs import Env
 from fastapi_django.constants import EnvironmentEnum
-from kz.logging import default_logging_config
+from kz.logging import get_logging_config
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 env = Env()
@@ -54,13 +54,14 @@ MANAGEMENT = [
     }
 ]
 
-LOGGING = default_logging_config  # default_logging_config - это функция  # TODO: нужно ли выносить такое в библиоетку?
+LOGGING = get_logging_config()
 
 # настройки логирования КЗ
-KZ_LOGGING_LEVEL = logging.INFO
-KZ_LOGGING_JSON = True
-KZ_LOGGING_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-KZ_LOGGING_SERVICE_NAME = PROJECT_NAME   # TODO: при старте uvicorn это не добавляется в лог, но добавляется только при запросе пользователя
+KZ_LOG_LEVEL = logging.INFO
+KZ_LOG_JSON = True
+KZ_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+KZ_LOG_SERVICE_NAME = PROJECT_NAME   # TODO: при старте uvicorn это не добавляется в лог, но добавляется только при запросе пользователя
+
 
 # бекенды для непосредственной (немедленной, в отличии от отправки писем в КЗ) отправки электронных писем
 # на одном уровне с ключом BACKEND предлагается прописывать обязательные параметры, а в OPTIONS - необязательные

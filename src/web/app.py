@@ -6,6 +6,7 @@ from tempfile import gettempdir
 
 from fastapi import FastAPI
 from fastapi_django.conf import settings
+from httpx import AsyncHTTPTransport, HTTPTransport
 from kz.middlewares.logging import LoggingMiddleware
 
 from web.api.auth import auth_examples_router
@@ -18,6 +19,18 @@ from web.api.sessions import session_examples_router
 from web.api.templates import router as templates_router
 from web.api.test import router as test_router
 from web.api.users import router as users_router
+
+
+def instrument():
+    def wrapper(*args, **kwargs):
+        if kwargs.get("headers"):
+            print("====>", kwargs.get("headers"))
+        else:
+            print("===> NOW")
+        return HTTPTransport.handle_request
+
+    HTTPTransport.handle_request = wrapper
+    # AsyncHTTPTransport.handle_async_request
 
 
 def setup_prometheus(app: FastAPI) -> None:
@@ -64,4 +77,5 @@ def create_app() -> FastAPI:
     app.include_router(templates_router)
     app.include_router(logging_router)
     add_middlewares(app)
+    instrument()
     return app

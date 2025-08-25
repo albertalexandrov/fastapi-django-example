@@ -18,7 +18,6 @@ PROJECT_NAME = "fastapi-django-example"
 API_DOCS_ENABLED = env.bool("API_DOCS_ENABLED", default=False)
 API_PREFIX = env.str("API_PREFIX", default="/api")
 
-LOG_LEVEL = env.str("LOG_LEVEL", default="INFO")
 
 DATABASE = {
     "DRIVERNAME": "postgresql+asyncpg",
@@ -54,14 +53,10 @@ MANAGEMENT = [
     }
 ]
 
-LOGGING = get_logging_config()
+LOG_LEVEL = env.str("LOG_LEVEL", logging.INFO)
+LOG_JSON = env.bool("LOG_JSON", True)
 
-# настройки логирования КЗ
-KZ_LOG_LEVEL = logging.INFO
-KZ_LOG_JSON = True
-KZ_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-KZ_LOG_SERVICE_NAME = PROJECT_NAME   # TODO: при старте uvicorn это не добавляется в лог, но добавляется только при запросе пользователя
-
+LOGGING = get_logging_config(service_name=PROJECT_NAME, log_level=LOG_LEVEL, log_json=LOG_JSON)
 
 # бекенды для непосредственной (немедленной, в отличии от отправки писем в КЗ) отправки электронных писем
 # на одном уровне с ключом BACKEND предлагается прописывать обязательные параметры, а в OPTIONS - необязательные

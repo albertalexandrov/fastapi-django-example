@@ -1,5 +1,6 @@
 import logging
 
+import httpx
 from fastapi import APIRouter, Depends
 from fastapi import Request
 from kz.auth.usr_adm import UsrAdmAuth
@@ -30,3 +31,9 @@ async def test_logging(request: Request):
     #     "request_id": "8c54e50cb1494026accb25bad4ec685a"
     # }
     return logging_context
+
+
+@router.get("/logging/e2e")
+async def e2e_logging():
+
+    return httpx.get("https://httpbin.org/get").json()

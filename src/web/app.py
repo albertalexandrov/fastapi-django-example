@@ -6,8 +6,10 @@ from tempfile import gettempdir
 
 from fastapi import FastAPI
 from fastapi_django.conf import settings
-from httpx import AsyncHTTPTransport, HTTPTransport
+from kz.logging.trace import trace_httpx
 from kz.middlewares.logging import LoggingMiddleware
+from starlette_context.middleware import ContextMiddleware
+from starlette_context.plugins import RequestIdPlugin
 
 from web.api.auth import auth_examples_router
 from web.api.bell import router as bell_router
@@ -19,18 +21,6 @@ from web.api.sessions import session_examples_router
 from web.api.templates import router as templates_router
 from web.api.test import router as test_router
 from web.api.users import router as users_router
-
-
-def instrument():
-    def wrapper(*args, **kwargs):
-        if kwargs.get("headers"):
-            print("====>", kwargs.get("headers"))
-        else:
-            print("===> NOW")
-        return HTTPTransport.handle_request
-
-    HTTPTransport.handle_request = wrapper
-    # AsyncHTTPTransport.handle_async_request
 
 
 def setup_prometheus(app: FastAPI) -> None:
@@ -59,6 +49,7 @@ async def lifespan(app: FastAPI):
 
 def add_middlewares(app: FastAPI):
     app.add_middleware(LoggingMiddleware)  # noqa
+    app.add_middleware(ContextMiddleware, plugins=[RequestIdPlugin()])
 
 
 def create_app() -> FastAPI:
@@ -77,5 +68,5 @@ def create_app() -> FastAPI:
     app.include_router(templates_router)
     app.include_router(logging_router)
     add_middlewares(app)
-    instrument()
+    trace_httpx()
     return app

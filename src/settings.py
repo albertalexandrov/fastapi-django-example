@@ -3,7 +3,7 @@ from functools import partial
 
 from environs import Env
 from fastapi_django.constants import EnvironmentEnum
-from kz.logging import get_logging_config
+from kz.logging.config import get_logging_config
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 env = Env()

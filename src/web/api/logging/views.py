@@ -35,5 +35,8 @@ async def test_logging(request: Request):
 
 @router.get("/logging/e2e")
 async def e2e_logging():
-
-    return httpx.get("https://httpbin.org/get").json()
+    async with httpx.AsyncClient() as client:
+        resp = await client.get("http://localhost:8001/api/v1/libs/regions")
+    if resp.status_code != 200:
+        return resp.status_code
+    return resp.json()

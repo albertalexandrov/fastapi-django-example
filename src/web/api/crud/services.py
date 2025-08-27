@@ -4,7 +4,7 @@ from fastapi import Depends
 from kz.auth.usr_adm import User as RequestUser
 from fastapi_django.db.repositories.queryset import QuerySet
 from fastapi_django.db.services.list import ListService, LimitOffsetPagination
-from fastapi_django.exceptions.http import HTTP400Exception
+from fastapi_django.exceptions import HTTP400Exception
 from starlette.requests import Request
 
 from models import User

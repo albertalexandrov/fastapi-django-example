@@ -2,7 +2,7 @@ import logging
 from functools import partial
 
 from environs import Env
-from fastapi_django.constants import EnvironmentEnum
+from kz.constants import EnvironmentEnum
 from kz.logging.config import get_logging_config
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
@@ -142,8 +142,11 @@ KZ_AUTH_USR_ADM_HOST = USR_ADM_HOST
 KZ_AUTH_USR_ADM_USERNAME = USR_ADM_USERNAME
 KZ_AUTH_USR_ADM_PASSWORD = USR_ADM_PASSWORD
 KZ_AUTH_USR_ADM_VERIFY = USR_ADM_VERIFY
-KZ_AUTH_REALM_URL = env.str("KZ_AUTH_REALM_URL", default="http://localhost")
+KZ_AUTH_REALM_URL = env.str("KZ_AUTH_REALM_URL", "http://localhost")
 
-TEMPLATES_DIRECTORY = env.str("TEMPLATES_DIRECTORY", default="templates")
+TEMPLATES_DIRECTORY = env.str("TEMPLATES_DIRECTORY", "templates")
 TEMPLATES_CONTEXT_PROCESSORS = []
 TEMPLATES_ENV_OPTIONS = {}
+
+SENTRY_DSN = env.str("SENTRY_DSN", None)
+SENTRY_SAMPLE_RATE = env.float("SENTRY_SAMPLE_RATE", 1)

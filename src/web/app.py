@@ -1,13 +1,19 @@
+import logging
 import os
 import shutil
 from contextlib import asynccontextmanager
 from pathlib import Path
 from tempfile import gettempdir
 
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi_django.conf import settings
-from kz.logging.trace import trace_httpx
-from kz.middlewares.logging import LoggingMiddleware
+from kz.logging.httpx import add_request_id_to_request
+from kz.logging.sentry import add_request_id_to_event
+from kz.middlewares import LoggingMiddleware, ExceptionMiddleware
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from starlette_context.middleware import ContextMiddleware
 from starlette_context.plugins import RequestIdPlugin
 
@@ -22,9 +28,12 @@ from web.api.templates import router as templates_router
 from web.api.test import router as test_router
 from web.api.users import router as users_router
 
+logger = logging.getLogger(__name__)
+
 
 def setup_prometheus(app: FastAPI) -> None:
     if not settings.PROMETHEUS_ENABLED:
+        logger.info("Prometheus не был проинициализирован")
         return
     prometheus_multiproc_dir = Path(gettempdir()) / "prometheus"
     shutil.rmtree(prometheus_multiproc_dir, ignore_errors=True)
@@ -37,6 +46,28 @@ def setup_prometheus(app: FastAPI) -> None:
     instrumentator = Instrumentator(should_group_status_codes=False)
     instrumentator.instrument(app)
     instrumentator.expose(app, should_gzip=True, name="prometheus_metrics")
+    logger.info("Prometheus проинициализирован")
+
+
+def setup_sentry() -> None:
+    if not settings.SENTRY_DSN:
+        logger.info("Sentry не был проинициализирован")
+        return
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        traces_sample_rate=settings.SENTRY_SAMPLE_RATE,
+        environment=settings.ENVIRONMENT,
+        integrations=[
+            FastApiIntegration(transaction_style="endpoint"),
+            LoggingIntegration(
+                level=settings.LOG_LEVEL,
+                event_level=logging.ERROR,
+            ),
+            SqlalchemyIntegration(),
+        ],
+        before_send=add_request_id_to_event,
+    )
+    logger.info("Sentry проинициализирован")
 
 
 @asynccontextmanager
@@ -48,8 +79,10 @@ async def lifespan(app: FastAPI):
 
 
 def add_middlewares(app: FastAPI):
-    app.add_middleware(LoggingMiddleware)  # noqa
-    app.add_middleware(ContextMiddleware, plugins=[RequestIdPlugin()])
+    # запрос проходит снизу вверх
+    app.add_middleware(ExceptionMiddleware)  # добавит в лог исключения идентификатор запроса request_id
+    app.add_middleware(LoggingMiddleware)  # создаст контекст логирования, куда будет помещен идентификатор запроса request_id
+    app.add_middleware(ContextMiddleware, plugins=[RequestIdPlugin()])  # создаст контекст запроса
 
 
 def create_app() -> FastAPI:
@@ -68,5 +101,6 @@ def create_app() -> FastAPI:
     app.include_router(templates_router)
     app.include_router(logging_router)
     add_middlewares(app)
-    trace_httpx()
+    add_request_id_to_request()
+    setup_sentry()
     return app

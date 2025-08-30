@@ -40,3 +40,9 @@ async def e2e_logging():
     if resp.status_code != 200:
         return resp.status_code
     return resp.json()
+
+
+@router.get("/logging/request-id-to-sentry")
+async def request_id_to_sentry():
+    # провоцируем исключение, чтобы x-request-id был добавлен в теги события sentry
+    1/0

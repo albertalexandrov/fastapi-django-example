@@ -1,4 +1,5 @@
-from fastapi_django.db.models.base import Model
+from fastapi_django.db.models.base import Model, IntBase
+from fastapi_django.db.models.mixins import CreatedAtMixin, UpdatedAtMixin
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -11,10 +12,10 @@ class UserRole(Model):
     users: Mapped[list["User"]] = relationship(back_populates="role")
 
 
-class User(Model):
+class User(CreatedAtMixin, UpdatedAtMixin, IntBase):
     __tablename__ = "users"
+    __mapper_args__ = {"eager_defaults": True}
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str]
     role_id: Mapped[int | None] = mapped_column(ForeignKey("user_roles.id"))
     role: Mapped["UserRole"] = relationship(back_populates="users")

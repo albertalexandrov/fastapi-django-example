@@ -17,18 +17,33 @@ class RoleNotFoundHTTPException(HTTP400Exception):
         super().__init__(detail="Роль не найдена", headers=headers)
 
 
-class CreateUserService:
+class UserNotFoundHTTPException(HTTP400Exception):
+    def __init__(self, user_id: int, headers: dict | None = None) -> None:
+        super().__init__(detail=f"Пользователь id={user_id} не найден", headers=headers)
+
+
+class UsersService:
     def __init__(self, users: UsersRepository = Depends(), user_roles: UserRolesRepository = Depends()):
         self._users = users
         self._user_roles = user_roles
 
     async def create_user(self, data: dict, user: RequestUser) -> User:
+        data = await self._validate_data(data)
         data["created_by_email"] = user.username
+        return await self._users.commit().create(**data)
+
+    async def update_user(self, user_id: int, data: dict) -> User:
+        if not (user := await self._users.get_by_pk(user_id)):
+            raise UserNotFoundHTTPException(user_id)
+        data = await self._validate_data(data)
+        return user.update(**data)
+
+    async def _validate_data(self, data: dict) -> dict:
         role_id = data.pop('role_id')
         if (role := await self._user_roles.get_by_pk(role_id)) is None:
             raise RoleNotFoundHTTPException
         data["role"] = role
-        return await self._users.commit(True).create(**data)
+        return data
 
 
 class UsersListService(ListService):

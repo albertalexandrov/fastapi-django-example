@@ -1,14 +1,15 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
-from fastapi_django.db.dependencies import contextify_autocommit_session
+from fastapi_django.db.dependencies import contextify_autocommit_session, contextify_transactional_session
+from fastapi_django.db.sessions import contextified_transactional_session
 from fastapi_django.exceptions import HTTP404Exception
 from kz.auth.usr_adm import UsrAdmAuth
 from kz.permissions import CodenamePermission
 from pydantic import BaseModel
 
 from shared.repositories import UsersRepository
-from web.api.crud.services import CreateUserService, UsersListService
+from web.api.crud.services import UsersService, UsersListService
 
 router = APIRouter(tags=["Примеры CRUD операций"])
 
@@ -35,22 +36,35 @@ async def simple_get(request: Request, user_id: int, users: UsersRepository = De
     raise UserNotFoundHTTPException
 
 
-class UserCreateData(BaseModel):
+class UserCreateUpdateData(BaseModel):
     name: str
     role_id: int
 
 
 @router.post(
-    "/create/user",
+    "/user/create",
     description="Пример создания объекта",
     dependencies=[
         Depends(UsrAdmAuth()),
         Depends(CanCreateOffer),
-        Depends(contextify_autocommit_session())
+        Depends(contextify_transactional_session())
     ]
 )
-async def create_user(request: Request, data: UserCreateData, service: Annotated[CreateUserService, Depends()]):
+async def create_user(request: Request, data: UserCreateUpdateData, service: Annotated[UsersService, Depends()]):
     return await service.create_user(data.model_dump(), request.user)
+
+
+@router.put(
+    "/user/{user_id}/update",
+    description="Пример обновления объекта",
+    dependencies=[
+        # Depends(UsrAdmAuth()),
+        # Depends(CanCreateOffer),
+    ]
+)
+async def update_user(user_id: int, data: UserCreateUpdateData, service: Annotated[UsersService, Depends()]):
+    async with contextified_transactional_session():
+        return await service.update_user(user_id, data.model_dump())
 
 
 @router.get(
